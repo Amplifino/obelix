@@ -1,0 +1,6 @@
+Export-Package: com.amplifino.obelix.timeseries
+-buildpath: \
+	com.amplifino.obelix.sets;version=latest,\
+	com.amplifino.counters;version=1.0,\
+	com.amplifino.obelix.sequences;version=latest,\
+	osgi.annotation;version=6.0

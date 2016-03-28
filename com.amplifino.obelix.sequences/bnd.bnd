@@ -1,0 +1,9 @@
+Bundle-Version: 1.0.0
+Export-Package: com.amplifino.obelix.sequences
+-buildpath: \
+	com.amplifino.obelix.segments;version=latest,\
+	com.amplifino.obelix.space;version=latest,\
+	com.amplifino.obelix.sets;version=latest,\
+	biz.aQute.junit;version=3.0,\
+	com.amplifino.counters,\
+	com.amplifino.obelix.injections;version=latest

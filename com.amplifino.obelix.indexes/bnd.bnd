@@ -1,0 +1,10 @@
+Bundle-Version: 1.0.0
+Export-Package: com.amplifino.obelix.indexes
+-buildpath: \
+	com.amplifino.obelix.space;version=latest,\
+	com.amplifino.obelix.sortedmaps;version=latest,\
+	com.amplifino.obelix.sets;version=latest,\
+	com.amplifino.obelix.segments;version=latest,\
+	com.amplifino.obelix.injections;version=latest,\
+	osgi.annotation;version=6.0,\
+	biz.aQute.junit;version=3.0

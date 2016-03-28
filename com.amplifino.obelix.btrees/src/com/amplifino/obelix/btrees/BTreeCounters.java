@@ -1,0 +1,19 @@
+package com.amplifino.obelix.btrees;
+
+public enum BTreeCounters {
+	GETS,
+	INSERTS,
+	UPDATES,
+	REMOVALS,
+	COMPARES,
+	LEAFSPLITS,
+	BRANCHSPLITS,
+	LEVELINCREASES,
+	LEVELDECREASES,
+	ALLOCATIONS,
+	FREES,
+	RESTARTS,	
+	MAXRESTARTS,
+	FAILEDRESTARTS;
+	
+}

@@ -1,0 +1,10 @@
+Bundle-Version: 1.0.0
+Export-Package: com.amplifino.obelix.segments
+-buildpath: \
+	com.amplifino.obelix.space;version=latest,\
+	com.amplifino.obelix.stores;version=latest,\
+	com.amplifino.counters,\
+	com.amplifino.obelix.sets;version=latest,\
+	com.amplifino.obelix.guards;version=latest,\
+	biz.aQute.junit;version=3.0,\
+	com.google.guava;version=18.0

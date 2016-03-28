@@ -1,0 +1,8 @@
+Bundle-Version: 1.0.0
+-buildpath: \
+	osgi.annotation;version=6.0,\
+	com.amplifino.counters,\
+	biz.aQute.junit;version=3.0
+Export-Package: \
+	com.amplifino.obelix.sets,\
+	com.amplifino.obelix.pairs

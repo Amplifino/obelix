@@ -1,0 +1,5 @@
+-buildpath: \
+	com.amplifino.obelix.space;version=latest,\
+	com.amplifino.obelix.sets;version=latest,\
+	osgi.annotation;version=6.0
+Export-Package: com.amplifino.obelix.stores
