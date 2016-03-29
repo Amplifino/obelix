@@ -77,6 +77,7 @@ public final  class SmartSynonymHashCluster implements Index<Long, Long> {
 		return range(hash).map(value -> OrderedPair.of(hash, value)); 
 	}
 	
+	@Override
 	public SmartSynonymHashCluster remove(Long hash, Long element) {
 		counters.increment(HashCounters.REMOVALS);
 		Iterator<HashEntry> iterator = hashEntries(hash).iterator();

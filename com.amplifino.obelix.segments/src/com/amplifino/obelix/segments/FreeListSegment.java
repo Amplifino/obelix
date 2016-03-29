@@ -47,10 +47,12 @@ class FreeListSegment extends HeaderSegment {
 	
 	private class FreeListOwner implements FreeList.FreeListOwner {
 		
+		@Override
 		public ByteSpace space() {
 			return FreeListSegment.this.space();
 		}
 		
+		@Override
 		public FreeList.TryResult tryAllocate(long key, long size) {
 			HeaderRecord record  = record(key);
 			if (record.isFree()) {
@@ -60,6 +62,7 @@ class FreeListSegment extends HeaderSegment {
 			}
 		}	
 		
+		@Override
 		public long allocateFreeListRecord() {
 			long key = allocate(512);
 			HeaderRecord.marked(space(), key, 512); 

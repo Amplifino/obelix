@@ -1,3 +1,5 @@
 Bundle-Version: 1.0.0
 Export-Package: com.amplifino.obelix.injections
--buildpath: com.amplifino.obelix.sets;version=latest
+-buildpath: \
+	com.amplifino.obelix.sets;version=latest,\
+	osgi.annotation;version=6.0

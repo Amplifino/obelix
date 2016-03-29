@@ -29,6 +29,7 @@ public class DefaultTimeSequence<V> implements TimeSequence<V> {
 		return Instant.ofEpochSecond(TimeUnit.SECONDS.convert(key, timeUnit) * cellDuration);
 	}
 	
+	@Override
 	public Instant normalize(Instant instant) {
 		return timeSeriesKey(sequenceKey(instant));
 	}
@@ -42,6 +43,7 @@ public class DefaultTimeSequence<V> implements TimeSequence<V> {
 		return sequence.get(sequenceKey(instant));
 	}
 	
+	@Override
 	public DefaultTimeSequence<V> put(Instant instant, V value) {
 		sequence.put(sequenceKey(instant), value);
 		return this;
@@ -52,6 +54,7 @@ public class DefaultTimeSequence<V> implements TimeSequence<V> {
 		return sequence.graph().map(pair -> TimeSeriesElement.of(timeSeriesKey(pair.key()), pair.value()));
 	}
 	
+	@Override
 	public Stream<? extends TimeSeriesElement<V>> graph(Optional<Instant> start , Optional<Instant> end) {
 		return sequence.graph(sequenceDomain(start,end))
 				.map(pair -> TimeSeriesElement.of(timeSeriesKey(pair.key()), pair.value()));

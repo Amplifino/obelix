@@ -123,6 +123,7 @@ public final class MappedFileSpace extends PagedSpace {
 	 *  In addition to the super class behavior, 
 	 *  this implementation also  calls force on the underlying file channel.
 	 */
+	@Override
 	public MappedFileSpace force() throws IOException {
 		super.force();
 		channel.force(true);
@@ -135,6 +136,7 @@ public final class MappedFileSpace extends PagedSpace {
 	 *  In addition to the super class behavior, 
 	 *  this implementation also  calls close on the underlying file channel.
 	 */
+	@Override
 	public void close() throws IOException {
 		super.close();
 		channel.close();

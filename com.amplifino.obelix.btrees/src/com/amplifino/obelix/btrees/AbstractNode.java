@@ -11,10 +11,12 @@ abstract class AbstractNode<K,V> implements RealNode<K,V> {
 		this.parent = new AtomicReference<>(parent);
 	}
 	
+	@Override
 	public Branch<K,V> parent() {
 		return parent.get();
 	}
 	
+	@Override
 	public AbstractNode<K,V> parent(Branch<K,V> parent) {
 		this.parent.set(parent);
 		return this;

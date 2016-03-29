@@ -27,6 +27,7 @@ public abstract class AbstractInfiniteMap<K,V> implements InfiniteMap<K, V> {
 		return counters;
 	}
 	
+	@Override
 	public Counts counts() {
 		return counters.counts();
 	}

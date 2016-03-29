@@ -71,6 +71,7 @@ public final class DirectorySpace extends PagedSpace {
 		return new DirectorySpace(directory, pageShift, generator); 
 	}
 	
+	@Override
 	protected final ByteSpace map(long page, long pageSize) {
 		return generator.apply(directory, page);
 	} 

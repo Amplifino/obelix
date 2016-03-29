@@ -23,6 +23,7 @@ public interface HashSpace<T> extends LongFullFunction<T> {
 		return domain().mapToObj(LongKeyPair.graph(this::get));
 	}
 	
+	@Override
 	default Stream<T> range() {
 		return domain().mapToObj(this::get);
 	}

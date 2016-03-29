@@ -86,6 +86,7 @@ public final class SynonymHashCluster<T> implements Index<Long, T> {
 		return range(hash).map(t -> OrderedPair.of(hash,t));
 	}
 	
+	@Override
 	public SynonymHashCluster<T> remove(Long hash, T element) {
 		counters.increment(HashCounters.REMOVALS);
 		try (LockResource lock = writeLock()) {

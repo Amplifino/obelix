@@ -64,7 +64,7 @@ class RootNode<K,V> implements Branch<K,V> {
 		space().remove(tag >> 1);
 	}
 	
-	
+	@Override
 	public Optional<V> get(K key) {
 		return splitState.retryGet(root -> get(root, key)); 
 	}

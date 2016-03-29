@@ -38,6 +38,7 @@ abstract class HeaderSegment extends HighWaterMarkSpace implements RecordIndex {
 		space().putLong(position(key), header.value());
 	}
 	
+	@Override
 	protected synchronized long allocate(long size) {
 		long key = super.allocate(size);
 		HeaderRecord.marked(space(), key, size);
@@ -67,6 +68,7 @@ abstract class HeaderSegment extends HighWaterMarkSpace implements RecordIndex {
 		return record(key).isValid();
 	}
 	
+	@Override
 	public LongStream keys() {
 		return StreamSupport.longStream(new Cursor(), false);
 	}

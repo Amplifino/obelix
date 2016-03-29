@@ -127,14 +127,17 @@ public final class BlockSpace extends HighWaterMarkSpace  {
 	
 	private class FreeListOwner implements FreeList.FreeListOwner {
 		
+		@Override
 		public ByteSpace space()  {
 			return BlockSpace.this.space();
 		}
 		
+		@Override
 		public FreeList.TryResult tryAllocate(long blockNumber, long size) {
 			return FreeList.TryResult.REMOVE;
 		}
 		
+		@Override
 		public long allocateFreeListRecord() {
 			if (freeList.tail().isPresent()) {
 				long blockNumber = allocateBlock();

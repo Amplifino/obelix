@@ -14,6 +14,7 @@ public interface TimeSequence<V> extends FullFunction<Instant, V> {
 	Instant normalize(Instant instant);
 	TimeSequence<V> put(Instant instant, V value);
 	public Stream<? extends TimeSeriesElement<V>> graph(Optional<Instant> start , Optional<Instant> end);
+	@Override
 	default public Stream<? extends TimeSeriesElement<V>> graph() {
 		return graph(Optional.empty(), Optional.empty());
 	}

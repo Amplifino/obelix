@@ -110,6 +110,7 @@ public interface ByteSpace extends AutoCloseable {
      * @throws  IOException
      *          If an I/O error occurs
      */
+	@Override
 	void close() throws IOException;
 	
 	/**

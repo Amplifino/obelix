@@ -10,10 +10,12 @@ class RecordSpaceBuilderImpl implements RecordSpaceBuilder, SegmentTypes.Visitor
 		this.space = space;
 	}
 	
+	@Override
 	public RecordSpace build() {
 		return build(SegmentTypes.tag(Segment.typeTag(space)));
 	}
 	
+	@Override
 	public RecordSpace build(SegmentTypes type) {
 		return type.visit(this);
 	}

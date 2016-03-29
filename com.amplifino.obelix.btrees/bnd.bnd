@@ -6,4 +6,5 @@ Export-Package: com.amplifino.obelix.btrees
 	com.amplifino.obelix.space;version=latest,\
 	com.amplifino.obelix.segments;version=latest,\
 	com.amplifino.obelix.injections;version=latest,\
-	biz.aQute.junit;version=3.0
+	biz.aQute.junit;version=3.0,\
+	osgi.annotation;version=6.0

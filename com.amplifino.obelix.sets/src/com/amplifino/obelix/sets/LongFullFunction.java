@@ -28,6 +28,7 @@ public interface LongFullFunction<V> extends LongRelation<V> {
 		return Stream.of(get(key));
 	}
 	
+	@Override
 	default Stream<LongKeyPair<V>> graph (LongStream subset ) {
 		return subset.mapToObj(LongKeyPair.graph(this::get));
 

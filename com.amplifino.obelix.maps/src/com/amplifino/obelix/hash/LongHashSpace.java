@@ -11,6 +11,7 @@ public interface LongHashSpace extends LongToLongFullFunction  {
 
 	LongHashSpace put(long index, long value);
 	
+	@Override
 	default LongStream domain() {
 		return LongStream.range(0, capacity());
 	}
