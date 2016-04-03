@@ -75,14 +75,17 @@ class RootSplitState<K,V> {
 		return count + 1;
 	}
 
+	@FunctionalInterface
 	interface GetWithRetry<K,V,T> {
 		T get(RealNode<K,V> root) throws SplitException;
 	}
 	
+	@FunctionalInterface
 	interface PutWithRetry<K,V> {
 		void put(Optional<RealNode<K,V>> root) throws SplitException;
 	}
 	
+	@FunctionalInterface
 	interface NewRootProvider<K,V> {
 		Optional<RealNode<K,V>> apply(Optional<RealNode<K,V>> oldRoot) throws SplitException;
 	}

@@ -50,10 +50,12 @@ class BranchSplitState<K> {
 		throw new SplitException();
 	}
 	
+	@FunctionalInterface
 	interface GetWithRetry<T> {
 		T get() throws SplitException;
 	}
 	
+	@FunctionalInterface
 	interface PutWithRetry {
 		void put() throws SplitException;
 	}

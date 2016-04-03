@@ -3,5 +3,4 @@ Export-Package: com.amplifino.obelix.space
 -buildpath: \
 	com.amplifino.counters,\
 	osgi.annotation,\
-	com.amplifino.obelix.sets;version=latest,\
 	biz.aQute.junit;version=3.0

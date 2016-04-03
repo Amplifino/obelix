@@ -13,6 +13,11 @@ import com.amplifino.obelix.segments.BlockSpace;
 import com.amplifino.obelix.sets.Injection;
 import com.amplifino.obelix.sets.SortedInfiniteMap;
 
+/**
+ * 
+ * An implementation of a SortedInfiniteMap using a BTree.
+ * 
+ */
 public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 	
 	private final RootNode<K,V> root;

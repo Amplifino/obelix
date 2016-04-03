@@ -76,7 +76,7 @@ public final class SortedIndexedSplitMap<K,V> extends AbstractInfiniteMap<K, V> 
 	}
 	
 	@Override
-	public Stream<OrderedPair<K,V>> graph() {
+	public Stream<OrderedPair<K, V>> graph() {
 		return index.graph().map(OrderedPair.mapValue(store::get));
 	}
 
@@ -86,7 +86,7 @@ public final class SortedIndexedSplitMap<K,V> extends AbstractInfiniteMap<K, V> 
 	}
 
 	@Override
-	public Comparator<K> comparator() {
+	public Comparator<? super K> comparator() {
 		return index.comparator();
 	}
 	

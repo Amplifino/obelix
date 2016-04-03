@@ -26,7 +26,7 @@ public interface PartialFunction<K,V> extends BinaryRelation<K, V> {
 	Optional<V> get(K key);
 	
 	@Override
-	default Stream<? extends OrderedPair<K,V>> graph(K key) {
+	default Stream<? extends OrderedPair<K, V>> graph(K key) {
 		return get(key)
 			.map(OrderedPair.withKey(key))
 			.map(Stream::of)

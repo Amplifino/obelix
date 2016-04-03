@@ -17,11 +17,11 @@ class ConcurrentBlock<T> {
 		this.lock = lock;
 	}
 	
-	public static <T> ConcurrentBlock<T> on(Injection<T, byte[]> injection, BlockLock lock) {
+	static <T> ConcurrentBlock<T> on(Injection<T, byte[]> injection, BlockLock lock) {
 		return new ConcurrentBlock<>(ObjectBlock.on(injection, lock.block()), lock);
 	}
 		
- 	public <R> R get(Function<Block<T>, R> function) throws SplitException {
+ 	<R> R get(Function<Block<T>, R> function) throws SplitException {
  		Lock readLock = lock.readLock();
 		try {
 			return function.apply(block);
@@ -30,7 +30,7 @@ class ConcurrentBlock<T> {
 		}
 	}
 	
-	public ConcurrentBlock<T> put(SplitConsumer<T> consumer) throws SplitException {
+	ConcurrentBlock<T> put(SplitConsumer<T> consumer) throws SplitException {
 		Lock writeLock = lock.writeLock();
 		try {
 			consumer.accept(block);
@@ -40,18 +40,19 @@ class ConcurrentBlock<T> {
 		return this;
 	}
 	
-	public void invalidate() {
+	void invalidate() {
 		lock.invalidate();
 	}
 	
-	public void truncate(int split) {
+	void truncate(int split) {
 		block.truncate(split);
 	}
 	
-	public boolean isValid() {
+	boolean isValid() {
 		return lock.isValid();
 	}
 	
+	@FunctionalInterface
 	interface SplitConsumer<T> {
 		void accept(Block<T> block) throws SplitException;
 	}

@@ -1,8 +1,5 @@
 package com.amplifino.obelix.stores;
 
-import java.util.AbstractList;
-import java.util.List;
-
 import com.amplifino.obelix.space.ByteSpace;
 
 public final class ByteSpaceBlock implements Block<byte[]>  {
@@ -39,7 +36,7 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		return element.length + Integer.BYTES <= remaining();
 	}
 	
-	public long remaining() {
+	private long remaining() {
 		return space.capacity() - offset(size()) - Integer.BYTES * size();
 	}
 	
@@ -165,26 +162,4 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 	public void truncate(int end) {
 		size(end);
 	}
-	
-	public List<byte[]> toList() {
-		return new LazyList();
-	}
-	
-	private class LazyList extends AbstractList<byte[]> {
-		
-		private LazyList() {
-		}
-		
-		@Override
-		public byte[] get(int index) {
-			return ByteSpaceBlock.this.get(index); 
-		}
-
-		@Override
-		public int size() {
-			return ByteSpaceBlock.this.size();
-		}
-			
-	}
-
 }

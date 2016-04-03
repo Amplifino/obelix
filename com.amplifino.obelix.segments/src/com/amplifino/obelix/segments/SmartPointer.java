@@ -1,5 +1,12 @@
 package com.amplifino.obelix.segments;
  
+/**
+ * SmartPointer combines a 63 bit pointer with a single flag bit into a single long
+ * If the flag bit is clear the smartpointer is valid, unless the pointer value is zero.
+ * If the flag bit is market the smartpointer is marked. 
+ * The specific semantics of marked depend on the user of the SmartPointer class
+ *
+ */
 public final class SmartPointer {
 	
 	static final int BYTES = Long.BYTES;

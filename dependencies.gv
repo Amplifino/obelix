@@ -30,7 +30,6 @@ sortedmaps -> space;
 sortedmaps -> stores;
 sortedmaps -> btrees;
 sortedmaps -> injections;
-space -> sets;
 stores -> space;
 stores -> sets;
 timeseries -> sets;

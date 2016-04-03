@@ -14,11 +14,11 @@ class ConcurrentBlockSpace  {
 		this.space = space;
 	}
 	
-	public static ConcurrentBlockSpace on (BlockSpace space) {
+	static ConcurrentBlockSpace on (BlockSpace space) {
 		return new ConcurrentBlockSpace(space);
 	}
 		
-	public BlockLock get(long blockNumber) {
+	BlockLock get(long blockNumber) {
 		return cache.computeIfAbsent(blockNumber, this::fetch); 
 	}
 	
@@ -26,24 +26,24 @@ class ConcurrentBlockSpace  {
 		return BlockLock.on(space.get(blockNumber));
 	}
 		
-	public void remove(long blockNumber) {
+	void remove(long blockNumber) {
 		cache.remove(blockNumber);
 		space.remove(blockNumber);
 	}
 	
-	public void refresh(long blockNumber) {
+	void refresh(long blockNumber) {
 		cache.remove(blockNumber);
 	}
 	
-	public long getUserHeader() {
+	long getUserHeader() {
 		return space.getUserHeader();
 	}
 	
-	public void putUserHeader(long value) {
+	void putUserHeader(long value) {
 		 space.putUserHeader(value);
 	}
 	
-	public long allocate() {
+	long allocate() {
 		return space.allocate();
 	}
 	

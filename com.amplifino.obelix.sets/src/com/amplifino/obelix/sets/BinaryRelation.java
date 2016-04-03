@@ -23,7 +23,18 @@ import com.amplifino.obelix.pairs.OrderedPair;
 @ProviderType
 public interface BinaryRelation<K, V> {
 	
-	Stream<? extends OrderedPair<K,V>> graph(K key);
+	/**
+	 * returns the subset of the relation's graph when limiting the domain to the singleton containing the argument.
+	 * @param key
+	 * @return
+	 */
+	Stream<? extends OrderedPair<K, V>> graph(K key);
+	
+	/**
+	 * returns the graph set
+	 * @return a stream representing the graph set
+	 */
+	Stream<? extends OrderedPair<K, V>> graph();
 	
 	/**
 	 * returns the subset of the relation's range for which (<code>key</code>,v) is an element of graph set
@@ -31,22 +42,16 @@ public interface BinaryRelation<K, V> {
 	 * @param key the source element
 	 * @return a stream representing the range set 
 	 */
-	default Stream<? extends V> range(K key) {
+	default Stream<V> range(K key) {
 		return graph(key).map(OrderedPair::value);
 	}
-	
-	/**
-	 * returns the graph set
-	 * @return a stream representing the graph set
-	 */
-	Stream<? extends OrderedPair<K,V>> graph();
 	
 	/**
 	 * returns the graph subset obtained by restricting the domain to its intersection with the argument
 	 * @param subset the domain subset
 	 * @return a stream representing the graph subset
 	 */
-	default Stream<? extends OrderedPair<K,V>> graph (Stream<K> subset ) {
+	default Stream<? extends OrderedPair<? extends K,? extends V>> graph (Stream<K> subset ) {
 		return subset.flatMap(this::graph);
 	}
 

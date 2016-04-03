@@ -1,7 +1,6 @@
 package com.amplifino.obelix.space;
 
 import java.util.Objects;
-import java.util.stream.LongStream;
 
 class DefaultCellSpace implements CellSpace {
 
@@ -19,11 +18,7 @@ class DefaultCellSpace implements CellSpace {
 	public byte[] get(long key) {
 		return space.getBytes(key << cellShift, cellSize);
 	}
-	
-	@Override
-	public LongStream domain() {
-		return LongStream.range(0, capacity());
-	}
+
 
 	@Override
 	public CellSpace put(long key, byte[] value) {

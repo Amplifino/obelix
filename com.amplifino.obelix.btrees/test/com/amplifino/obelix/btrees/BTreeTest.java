@@ -45,7 +45,7 @@ public class BTreeTest {
 	
 	@Test
 	public void testSplit() {
-		BlockSpace space = BlockSpace.on(new HeapSpace(),1024, 0);
+		BlockSpace space = BlockSpace.on(new HeapSpace(),4096, 0);
 		BTree<String, Long> tree = BTree.on(
 				space, 
 				Comparator.<String>naturalOrder(), 

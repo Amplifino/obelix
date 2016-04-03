@@ -40,12 +40,12 @@ class DefaultLongGuards implements LongGuards {
 	
 	@Override
 	public <T> T read(long value, LongFunction<T> function) {
-		ReadWriteLock guard = guard(value);
-		guard.readLock().lock();
+		Lock guard = guard(value).readLock();
+		guard.lock();
 		try {
 			return function.apply(value);
 		} finally {
-			guard.readLock().unlock();
+			guard.unlock();
 		}
 	}
 

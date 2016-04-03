@@ -18,7 +18,7 @@ import com.amplifino.counters.Counts;
  * 
  * <p>This class represents a 64 bit address space or a subset.
  * ByteSpaces may be backed by any kind of physical memory.
- * This packages provides support for memory mapped files, regular files and java heap space,
+ * This package provides support for memory mapped files, regular files and java heap space,
  * the latter mainly intended for testing.</p>
  * 
  * <p>The API is inspired on java.nio.ByteBuffer, only retaining the absolute get and put variants.</p>

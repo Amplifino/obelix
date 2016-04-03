@@ -32,7 +32,7 @@ class MapBuilderImpl<K,V> implements MapBuilder<K, V>, MapTypes.Visitor<Infinite
 	private SegmentTypes segmentType = SegmentTypes.FREELIST;
 	private OptionalLong split = OptionalLong.empty();
 	private OptionalLong hashSize = OptionalLong.empty();
-	private ToLongFunction<? super K> hashFunction = k -> Objects.hashCode(k) & 0x00000000FFFFFFFFL;
+	private ToLongFunction<? super K> hashFunction = k -> Integer.toUnsignedLong(Objects.hashCode(k));
 	
 	MapBuilderImpl(ByteSpace space) {
 		this.space = space;

@@ -72,7 +72,7 @@ public final class IndexedSplitMap<K,V> extends AbstractInfiniteMap<K, V> {
 	}
 	
 	@Override
-	public Stream<OrderedPair<K,V>> graph() {
+	public Stream<OrderedPair<K, V>> graph() {
 		return index.graph().map(OrderedPair.mapValue(store::get));
 	}
 	

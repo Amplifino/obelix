@@ -20,7 +20,7 @@ import com.amplifino.obelix.hash.HashSpace;
 import com.amplifino.obelix.pairs.OrderedPair;
 import com.amplifino.obelix.sets.Index;
 
-public final class SynonymHashCluster<T> implements Index<Long, T> {
+final class SynonymHashCluster<T> implements Index<Long, T> {
 
 	private final HashSpace<Optional<T>> hashSpace;
 	private final ToLongFunction<T> hashFunction;

@@ -90,24 +90,13 @@ class SortedTinyMapAdapter<K,V> extends TinyMapAdapter<K, V> implements SortedMa
 		}
 
 		@Override
-		public Stream<V> range(K key) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		@Override
 		public Stream<? extends OrderedPair<K, V>> graph(Optional<K> lowerIncluded, Optional<K> upperExcluded) {
 			return map.graph(lowerIncluded, upperExcluded).filter(pair -> filter.test(pair.key()));
 		}
 
 		@Override
-		public Comparator<K> comparator() {
+		public Comparator<? super K> comparator() {
 			return map.comparator();
-		}
-
-		@Override
-		public SortedMap<K, V> asTinyMap() {
-			return new SortedTinyMapAdapter<>(this);
 		}
 	}	
 }

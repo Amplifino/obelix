@@ -1,29 +1,14 @@
 package com.amplifino.obelix.space;
 
-import java.util.stream.Stream;
-
 import org.osgi.annotation.versioning.ProviderType;
 
-import java.util.stream.LongStream;
-
-import com.amplifino.obelix.pairs.LongKeyPair;
-import com.amplifino.obelix.sets.LongFullFunction;
-
 @ProviderType
-public interface CellSpace extends LongFullFunction<byte[]> {
+public interface CellSpace {
 
-	public CellSpace put(long position, byte[] value);
-	public int cellSize();
-	public long capacity();
-	
-	default Stream<LongKeyPair<byte[]>> graph(long start, long end) {
-		return graph(LongStream.range(start,end));
-	}
-	
-	default CellSpace put(Stream<LongKeyPair<byte[]>> stream) {
-		stream.forEach(pair -> put(pair.key() , pair.value()));
-		return this;
-	}
+	byte[] get(long key);
+	CellSpace put(long position, byte[] value);
+	int cellSize();
+	long capacity();
 	
 	static CellSpace on(ByteSpace space , int cellSize) {
 		if (Integer.highestOneBit(cellSize) != cellSize || cellSize == 0) {
@@ -31,4 +16,5 @@ public interface CellSpace extends LongFullFunction<byte[]> {
 		}
 		return new DefaultCellSpace(space, cellSize);
 	}
+	
 }

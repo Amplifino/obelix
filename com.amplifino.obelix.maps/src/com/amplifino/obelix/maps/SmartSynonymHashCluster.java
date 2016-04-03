@@ -18,7 +18,7 @@ import com.amplifino.obelix.pairs.OrderedPair;
 import com.amplifino.obelix.segments.SmartPointer;
 import com.amplifino.obelix.sets.Index;
 
-public final  class SmartSynonymHashCluster implements Index<Long, Long> {
+public final class SmartSynonymHashCluster implements Index<Long, Long> {
 
 	private final SmartPointerHashSpace hashSpace;
 	private final LongUnaryOperator hashFunction;

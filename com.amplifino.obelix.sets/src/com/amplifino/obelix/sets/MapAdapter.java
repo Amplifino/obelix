@@ -42,7 +42,7 @@ class MapAdapter<K,V> implements InfiniteMap<K,V> {
 	}
 	
 	@Override
-	public V computeIfAbsent(K key, Function<K,V> mappingFunction) {
+	public V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
 		return map.computeIfAbsent(key, mappingFunction);
 	}
 	

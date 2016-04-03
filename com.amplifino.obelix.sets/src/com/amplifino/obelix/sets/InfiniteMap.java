@@ -51,7 +51,7 @@ public interface InfiniteMap<K, V> extends PartialFunction<K,V> {
      *         the specified key
      *
      */
-	default V computeIfAbsent(K key, Function<K,V> mappingFunction) {
+	default V computeIfAbsent(K key, Function<? super K,? extends V> mappingFunction) {
 		return get(key).orElseGet( () -> {
 			V value = mappingFunction.apply(key);
 			put(key,value);
@@ -90,7 +90,7 @@ public interface InfiniteMap<K, V> extends PartialFunction<K,V> {
 	 * @param <V> type of elements of the target set
 	 * @return the wrapped map
 	 */
-	public static <K,V> InfiniteMap<K,V>  wrap(Map<K,V> map) {
+	static <K,V> InfiniteMap<K,V>  wrap(Map<K,V> map) {
 		return MapAdapter.wrap(map);
 	}
 		

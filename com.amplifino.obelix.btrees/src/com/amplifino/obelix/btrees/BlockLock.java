@@ -5,7 +5,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.amplifino.obelix.stores.Block;
-import com.amplifino.obelix.stores.ByteSpaceBlock;
 
 class BlockLock {
 	
@@ -17,7 +16,7 @@ class BlockLock {
 		this.block = block;
 	}
 	
-	public static <T> BlockLock on(ByteSpaceBlock block) {
+	static <T> BlockLock on(Block<byte[]> block) {
 		return new BlockLock(block);
 	}
 	
@@ -68,5 +67,4 @@ class BlockLock {
 		block.truncate(n);
 	}
 
- 	 
 }
