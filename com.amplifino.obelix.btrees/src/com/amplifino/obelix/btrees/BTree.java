@@ -21,13 +21,13 @@ import com.amplifino.obelix.sets.SortedInfiniteMap;
 public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 	
 	private final RootNode<K,V> root;
-	private final Comparator<K> comparator;
+	private final Comparator<? super K> comparator;
 	private final ConcurrentBlockSpace space;
 	private final Injection<OrderedPair<K, V>, byte[]> leafInjection;
 	private final Injection<LongValuePair<K>, byte[]> branchInjection;
 	private final Counters<BTreeCounters> counters = Counters.of(BTreeCounters.class);
  	
-	private BTree(BlockSpace space, Comparator<K> comparator, Injection<K, byte[]> keyInjection, Injection<OrderedPair<K,V>, byte []> pairInjection) {
+	private BTree(BlockSpace space, Comparator<? super K> comparator, Injection<K, byte[]> keyInjection, Injection<OrderedPair<K,V>, byte []> pairInjection) {
 		this.space = ConcurrentBlockSpace.on(space);
 		this.comparator = comparator;
 		leafInjection = pairInjection;
@@ -35,7 +35,7 @@ public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 		this.root = new RootNode<>(this);
 	}
 	
-	public static <K,V> BTree<K,V> on(BlockSpace space, Comparator<K> comparator, Injection<K, byte[]> keyInjection, Injection<OrderedPair<K,V>, byte[]> pairInjection) {
+	public static <K,V> BTree<K,V> on(BlockSpace space, Comparator<? super K> comparator, Injection<K, byte[]> keyInjection, Injection<OrderedPair<K,V>, byte[]> pairInjection) {
 		return new BTree<>(space, comparator, keyInjection, pairInjection);
 	}
 	
@@ -103,7 +103,7 @@ public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 	}
 
 	@Override
-	public Comparator<K> comparator() {
+	public Comparator<? super K> comparator() {
 		return comparator;
 	}
 }

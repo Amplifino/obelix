@@ -1,5 +1,7 @@
 /**
- * Indexes
+ * Indexes.
+ * 
+ * This package contains an Index implementation based on a sorted Map
  * 
  */
 

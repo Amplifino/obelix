@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 interface ValueAdapter<V> extends Supplier<V> , Comparable<ValueAdapter<V>> {
 
-	static <V> ValueAdapter<V> of(V value, Comparator<V> comparator) {
+	static <V> ValueAdapter<V> of(V value, Comparator<? super V> comparator) {
 		return new DefaultValueAdapter<>(value, comparator);
 	}
 	
@@ -21,9 +21,9 @@ interface ValueAdapter<V> extends Supplier<V> , Comparable<ValueAdapter<V>> {
 	
 	class DefaultValueAdapter<V> implements ValueAdapter<V> {
 		private V value;
-		private Comparator<V> comparator;
+		private Comparator<? super V> comparator;
 	
-		private DefaultValueAdapter(V value, Comparator<V> comparator) {
+		private DefaultValueAdapter(V value, Comparator<? super V> comparator) {
 			this.value = value;
 			this.comparator = comparator;
 		}	

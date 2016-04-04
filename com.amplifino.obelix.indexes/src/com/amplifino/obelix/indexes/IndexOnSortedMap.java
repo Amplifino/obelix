@@ -12,9 +12,9 @@ import com.amplifino.obelix.sets.SortedInfiniteMap;
 class IndexOnSortedMap<K,V> implements SortedIndex<K, V> {
 
 	private final SortedInfiniteMap<OrderedPair<K,ValueAdapter<V>>,Boolean> map;
-	private final Comparator<V> valueComparator;
+	private final Comparator<? super V> valueComparator;
 	
-	IndexOnSortedMap(SortedInfiniteMap<OrderedPair<K,ValueAdapter<V>>, Boolean> map, Comparator<V> valueComparator) {
+	IndexOnSortedMap(SortedInfiniteMap<OrderedPair<K,ValueAdapter<V>>, Boolean> map, Comparator<? super V> valueComparator) {
 		this.map = map;
 		this.valueComparator = valueComparator;
 	}

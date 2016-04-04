@@ -21,8 +21,8 @@ public interface SortedIndexBuilder<K,V> {
 	SortedIndexBuilder<K,V> pairInjection(Injection<OrderedPair<K,V>, byte[]> pairInjection);
 	SortedIndexBuilder<K,V> split(long split);
 	SortedIndexBuilder<K,V> segmentType(SegmentTypes segmentType);
-	SortedIndexBuilder<K,V> keyComparator(Comparator<K> comparator);
-	SortedIndexBuilder<K,V> valueComparator(Comparator<V> valueComparator);
+	SortedIndexBuilder<K,V> keyComparator(Comparator<? super K> comparator);
+	SortedIndexBuilder<K,V> valueComparator(Comparator<? super V> valueComparator);
 	SortedIndexBuilder<K,V> blockSize(long size);
 	
 	

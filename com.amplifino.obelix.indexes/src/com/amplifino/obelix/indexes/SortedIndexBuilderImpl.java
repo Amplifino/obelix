@@ -19,9 +19,9 @@ class SortedIndexBuilderImpl<K,V> implements SortedIndexBuilder<K, V> {
 	private Optional<Injection<V, byte[]>> valueInjection= Optional.empty();
 	private Optional<Injection<OrderedPair<K,V>, byte[]>> pairInjection = Optional.empty();
 	@SuppressWarnings({ "unchecked", })
-	private Comparator<K> keyComparator = (Comparator<K>) Comparator.naturalOrder();
+	private Comparator<? super K> keyComparator = (Comparator<K>) Comparator.naturalOrder();
 	@SuppressWarnings({ "unchecked" })
-	private Comparator<V> valueComparator = (Comparator<V>) Comparator.naturalOrder();
+	private Comparator<? super V> valueComparator = (Comparator<V>) Comparator.naturalOrder();
 	
 	SortedIndexBuilderImpl(ByteSpace space) {
 		this.mapBuilder = SortedMapBuilder.on(space);
@@ -76,13 +76,13 @@ class SortedIndexBuilderImpl<K,V> implements SortedIndexBuilder<K, V> {
 	}
 
 	@Override
-	public SortedIndexBuilder<K,V> keyComparator(Comparator<K> comparator) {
+	public SortedIndexBuilder<K,V> keyComparator(Comparator<? super K> comparator) {
 		this.keyComparator = comparator;
 		return this;
 	}
 	
 	@Override
-	public SortedIndexBuilder<K,V> valueComparator(Comparator<V> comparator) {
+	public SortedIndexBuilder<K,V> valueComparator(Comparator<? super V> comparator) {
 		this.valueComparator = comparator;
 		return this;
 	}

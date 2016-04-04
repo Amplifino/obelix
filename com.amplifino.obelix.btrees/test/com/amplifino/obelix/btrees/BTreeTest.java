@@ -48,7 +48,7 @@ public class BTreeTest {
 		BlockSpace space = BlockSpace.on(new HeapSpace(),4096, 0);
 		BTree<String, Long> tree = BTree.on(
 				space, 
-				Comparator.<String>naturalOrder(), 
+				Comparator.naturalOrder(), 
 				RawInjections.strings(), 
 				LongValuePairInjection.of(RawInjections.strings()).boxed());
 		Counts snapshot = tree.counts();
@@ -56,16 +56,10 @@ public class BTreeTest {
 		int limit = 999999;
 		IntStream.range(0, limit)
 			.parallel()
-			//.peek(System.out::println)
-			.forEach(i -> {
-					try {
-						String key = String.valueOf(i);
-						tree.put(key, Thread.currentThread().getId());
-						checkList.add(key);
-					} catch (Exception e) {
-						System.out.println(i);
-						throw e;
-					}		
+			.mapToObj(Integer::toString)
+			.forEach(key -> {
+					tree.put(key, Thread.currentThread().getId());
+					checkList.add(key);		
 			});
 		String key = String.valueOf(limit);
 		tree.put(String.valueOf(key), Thread.currentThread().getId());
@@ -92,22 +86,11 @@ public class BTreeTest {
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		System.out.println(tree.graph().parallel().collect(Collectors.groupingBy(pair -> pair.value(), Collectors.counting())));
 		snapshot = tree.counts().delta(snapshot, Counts::print);
-		/*
-		assertTrue(new Random().ints(0, limit)
-			.limit(limit/10)
-			.parallel()
-			.mapToObj(String::valueOf)
-			.allMatch( string -> tree.get(string).get().equals(Long.valueOf(string))));
-		*/
 		IntStream.range(0, limit)
 			.parallel()
-			//.peek(System.out::println)
 			.forEach( i -> tree.remove(String.valueOf(i)));
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		assertEquals(0L, tree.graph().parallel().count());
 	}
-	
-	public static void main(String[] args) {
-		new BTreeTest().testSplit();
-	}
+
 }
