@@ -61,7 +61,7 @@ public interface OrderedPair<K,V>  {
 	}
 
 	/**
-	 * returns a pair based on the argument
+	 * returns a pair backed by the argument
 	 * @param entry the source
 	 * @param <K> the type of the pair's first element
 	 * @param <V> the type of the pair's second element

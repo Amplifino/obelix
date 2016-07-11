@@ -9,7 +9,7 @@ import com.amplifino.counters.Counters;
 import com.amplifino.counters.Counts;
 
 /**
- * Implements a mutable partial function 
+ * Implements a mutable or time varying partial function 
  * 
  * Behavior resembles java.util.Map, but is not limited to tiny maps.
  * The interface is infinite in its api, implementations and hardware restrictions may impose limits

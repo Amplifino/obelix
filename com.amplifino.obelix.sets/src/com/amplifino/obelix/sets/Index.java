@@ -3,7 +3,7 @@ package com.amplifino.obelix.sets;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * Defines a mutable binary relation.
+ * Defines a mutable or time varying binary relation.
  *
  * <p>Behavior resembles guava's MultiMap but is not limited to tiny sets </p>
  * 
