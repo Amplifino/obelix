@@ -9,22 +9,12 @@ class LimitedSpace extends WrappedSpace {
 		this.capacity = capacity;
 	}
 	
-	private void check(long position , int length) {
+	@Override
+	long translate(long position , int length) {
 		if (Long.compareUnsigned(capacity,  position + length) < 0) {
 			throw new IllegalArgumentException("Invalid position: " + position + " or length: " + length);
 		}  
-	}
-	
-	@Override
-	public ByteSpace get(long position, byte[] bytes, int start, int length) {
-		check(position, length); 
-		return super.get(position, bytes, start, length);
-	}
-
-	@Override
-	public ByteSpace put(long position, byte[] bytes, int start, int length) {
-		check(position, length);
-		return super.put(position, bytes, start, length);
+		return position;
 	}
 	
 	@Override
@@ -34,6 +24,17 @@ class LimitedSpace extends WrappedSpace {
 	
 	@Override
 	public ByteSpace capacity(long newCapacity) {
+		if (capacity == newCapacity) {
+			return this;
+		}
+		if (Long.compareUnsigned(newCapacity, capacity) > 0) {
+			throw new IllegalArgumentException("New capacity: " + newCapacity + "exceeds current capacity: " + capacity);
+		}
 		return space().capacity(newCapacity);
+	}
+	
+	@Override
+	public ByteSpace shift(long shift) {
+		return space().slice(shift, capacity);
 	}
 }

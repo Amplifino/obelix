@@ -71,27 +71,120 @@ public final class FileChannelSpace implements ByteSpace {
 	}
 	
 	@Override
-	public ByteSpace get(long position, byte[] bytes, int start, int length) {
-		counters.increment(LOGICALREADS).increment(PHYSICALREADS).add(BYTESREAD, length);
+	public ByteSpace get(long position, ByteBuffer buffer) {
+		counters.increment(LOGICALREADS).increment(PHYSICALREADS).add(BYTESREAD, buffer.remaining());
 		try {
-			channel.read(ByteBuffer.wrap(bytes, start, length), position);
+			channel.read(buffer, position);
 			return this;
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	@Override
+	public ByteBuffer get(long position, int length) {
+		ByteBuffer buffer = ByteBuffer.allocate(length);
+		get(position, buffer);
+		buffer.rewind();
+		return buffer;
+	}
+	
+	@Override
+	public byte[] getBytes(long position, int length) {
+		return get(position,length).array();
+	}
+	
+	@Override 
+	public ByteSpace put(long position, ByteBuffer buffer) {
+		counters.increment(LOGICALWRITES).increment(PHYSICALWRITES).add(BYTESWRITTEN, buffer.remaining());
+		try {
+			channel.write(buffer, position);
+			return this;
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@Override
+	public ByteSpace get(long position, byte[] bytes, int start, int length) {
+		return get(position, ByteBuffer.wrap(bytes, start, length));
 	}
 
 	@Override
 	public ByteSpace put(long position, byte[] bytes, int start, int length) {
-		counters.increment(LOGICALWRITES).increment(PHYSICALWRITES).add(BYTESWRITTEN, length);
-		try {
-			channel.write(ByteBuffer.wrap(bytes, start, length), position);
-			return this;
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		return put(position, ByteBuffer.wrap(bytes, start, length));
 	}
-
+	
+	@Override
+	public byte get(long position) {
+		return get(position, Byte.BYTES).get();
+	}
+	
+	@Override
+	public short getShort(long position) {
+		return get(position, Short.BYTES).getShort();
+	}
+	
+	@Override
+	public char getChar(long position) {
+		return get(position, Character.BYTES).getChar();
+	}
+	
+	@Override
+	public int getInt(long position) {
+		return get(position, Integer.BYTES).getInt();
+	}
+	
+	@Override
+	public float getFloat(long position) {
+		return get(position, Float.BYTES).getFloat();
+	}
+	
+	@Override
+	public long getLong(long position) {
+		return get(position, Long.BYTES).getLong();
+	}
+	
+	@Override
+	public double getDouble(long position) {
+		return get(position, Double.BYTES).getDouble();
+	}
+	
+	@Override
+	public ByteSpace put(long position, byte in) {
+		return put(position, ByteBuffer.allocate(Byte.BYTES).put(0, in));
+	}
+	
+	@Override
+	public ByteSpace putShort(long position, short in) {
+		return put(position, ByteBuffer.allocate(Short.BYTES).putShort(0, in));
+	}
+	
+	@Override
+	public ByteSpace putChar(long position, char in) {
+		return put(position, ByteBuffer.allocate(Character.BYTES).putChar(0, in));
+	}
+	
+	@Override
+	public ByteSpace putInt(long position, int in) {
+		return put(position, ByteBuffer.allocate(Integer.BYTES).putInt(0, in));
+	}
+	
+	@Override
+	public ByteSpace putFloat(long position, float in) {
+		return put(position, ByteBuffer.allocate(Float.BYTES).putFloat(0, in));
+	}
+	
+	@Override
+	public ByteSpace putLong(long position, long in) {
+		return put(position, (ByteBuffer) ByteBuffer.allocate(Long.BYTES).putLong(0, in));
+	}
+	
+	@Override
+	public ByteSpace putDouble(long position, double in) {
+		return put(position, ByteBuffer.allocate(Double.BYTES).putDouble(0, in));
+	}
+	
 	@Override
 	/**
 	 * {inheritDoc}

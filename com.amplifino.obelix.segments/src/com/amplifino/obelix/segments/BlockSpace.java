@@ -93,7 +93,7 @@ public final class BlockSpace extends HighWaterMarkSpace  {
 	}
 	
 	private  ByteSpace space(long blockNumber) {
-		return space().shift(offset(blockNumber) + overhead).capacity(blockSize - overhead);
+		return space().slice(offset(blockNumber) + overhead, blockSize - overhead);
 	}
 
 	public long allocate() {

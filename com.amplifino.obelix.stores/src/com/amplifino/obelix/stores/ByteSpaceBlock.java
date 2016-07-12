@@ -1,5 +1,7 @@
 package com.amplifino.obelix.stores;
 
+import java.nio.ByteBuffer;
+
 import com.amplifino.obelix.space.ByteSpace;
 
 public final class ByteSpaceBlock implements Block<byte[]>  {
@@ -55,11 +57,7 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 	}
 		
 	private long offset(int index) {
-		if (index == 0) {
-			return Integer.BYTES;
-		} else {
-			return space.getInt(space.capacity() - Integer.toUnsignedLong(index * Integer.BYTES));
-		}
+		return index == 0 ? Integer.BYTES : space.getInt(space.capacity() - Integer.toUnsignedLong(index * Integer.BYTES));
 	}
 	
 	private byte[] data(int index) {
@@ -116,11 +114,15 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		long offset = offset(index);
 		if (offset < last) {
 			move(offset, last, element.length);
-			long position = space.capacity() - size() * Integer.BYTES;
+			final int rowDirectoryLength = (size() + 1) * Integer.BYTES; 
+			final long position = space.capacity() - rowDirectoryLength;
+			final int modifiedRowDirectoryLength = rowDirectoryLength - index * Integer.BYTES;
+			ByteBuffer from =  space.get(position + Integer.BYTES, index == 0 ? modifiedRowDirectoryLength - Integer.BYTES : modifiedRowDirectoryLength);
+			ByteBuffer to = ByteBuffer.allocate(rowDirectoryLength);
 			for (int i = size() ; i >= index; i--) {
-				space.putInt(position - Integer.BYTES, (i == 0 ? Integer.BYTES :space.getInt(position)) + element.length);
-				position += Integer.BYTES;
+				to.putInt(((i == 0) ? Integer.BYTES : from.getInt()) + element.length); 			
 			}
+			space.put(position, (ByteBuffer) to.flip());
 		} else {
 			space.putInt(space.capacity() - (index +1 ) * Integer.BYTES, (int) (offset + element.length));
 		}
@@ -130,13 +132,7 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 	
 	
 	private void move(long start, long end, int offset) {
-		long toMove = end - start;
-		if (toMove <= Integer.MAX_VALUE) {
-			byte[] bytes = space.getBytes(start, (int) toMove);
-			space.put(start + offset, bytes);
-			return;
-		}
-		throw new IllegalArgumentException();
+		space.put(start + offset, space.getBytes(start,  Math.toIntExact(end - start)));
 	}
 	
 	@Override
@@ -162,4 +158,5 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 	public void truncate(int end) {
 		size(end);
 	}
+	
 }

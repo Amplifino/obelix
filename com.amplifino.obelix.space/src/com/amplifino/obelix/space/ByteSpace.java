@@ -18,7 +18,7 @@ import com.amplifino.counters.Counts;
  * 
  * <p>This class represents a 64 bit address space or a subset.
  * ByteSpaces may be backed by any kind of physical memory.
- * This package provides support for memory mapped files, regular files and java heap space,
+ * This package provides support for memory mapped files, regular files, off heap memory using direct ByteBuffer and java heap space,
  * the latter mainly intended for testing.</p>
  * 
  * <p>The API is inspired on java.nio.ByteBuffer, only retaining the absolute get and put variants.</p>
@@ -105,7 +105,7 @@ public interface ByteSpace extends AutoCloseable {
 	ByteSpace force() throws IOException;
 	
 	 /**
-     * Closes this channel.
+     * Closes this space.
      *
      * @throws  IOException
      *          If an I/O error occurs
@@ -116,7 +116,7 @@ public interface ByteSpace extends AutoCloseable {
 	/**
 	 * Returns this space capacity
 	 * 
-	 * @return the capacity of this space
+	 * @return the capacity of this space. Should be interpreted as an unsigned long.
 	 */
 	long capacity();
 	
@@ -166,40 +166,31 @@ public interface ByteSpace extends AutoCloseable {
 	 *
 	 * @return the copied byte array.
 	 */	
-	default byte[] getBytes(long position, int length) {
-		byte[] bytes = new byte[length];
-		get(position, bytes);
-		return  bytes;
-	}
+	 byte[] getBytes(long position, int length);
 	
 	/**
 	 * 
      * Absolute bulk <i>get</i> method.
      *
-     * <p> This method copies <code>length</code> bytes from this
+     * <p> This method copies <code>buffer.remaining()</code> bytes from this
      * space into the given ByteBuffer, starting at the given address in this
-     * space and at the current position in the buffer</p>  
+     * space and at the current position in the buffer</p>
+     * 
+     * <p> Upon return the buffers position will be the current position + remaining() </p>
      * 
      * @param  position
      * 		   The address from which bytes are copied
      * 
      * @param  buffer
      *         The buffer into which bytes are to be written
-     *
-     * @param  length
-     *         The number of bytes to be written to the given array.
-     *         must be non-negative and no larger than <code>buffer.remaining()</code>
-     *
+     *         
      * @return  This space
      *
      * @throws  IllegalArgumentException
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace get(long position, ByteBuffer buffer, int length) {
-		buffer.put(getBytes(position, length));
-		return this;
-	}
+	ByteSpace get(long position, ByteBuffer buffer);
 	
 	/**
 	 * 
@@ -207,8 +198,8 @@ public interface ByteSpace extends AutoCloseable {
      *
      * <p> This method copies <code>length</code> bytes from the
      * the given address in this space. No guarantees are made about the
-     * nature of the returned ByteBuffer. It may be backed by a normal array or 
-     * directly by the ByteSpace. It may or may not be a ReadOnlyByteBuffer</p>
+     * nature of the returned ByteBuffer. It may be backed by a heap byte array or 
+     * directly by the ByteSpace. It may or may not be a readonly ByteBuffer</p>
      * 
      * @param  position
      * 		   The address from which bytes are copied
@@ -223,10 +214,8 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */	
-	default ByteBuffer get(long position, int length) {
-		return ByteBuffer.wrap(getBytes(position, length));
-	}
-	
+	 ByteBuffer get(long position, int length); 
+	 
 	/**
 	 * 
      * Absolute <i>get</i> method.
@@ -243,10 +232,8 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default byte get(long position) {
-		return getBytes(position, Byte.BYTES)[0];
-	}
-	
+	byte get(long position);
+		
 	/**
 	 * 
      * Absolute <i>get</i> method.
@@ -264,9 +251,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default short getShort(long position) {
-		return get(position, Short.BYTES).getShort();
-	}
+	 short getShort(long position);
 	
 	/**
 	 * 
@@ -285,9 +270,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default char getChar(long position) {
-		return get(position, Character.BYTES).getChar();
-	}
+	char getChar(long position);
 	
 	/**
 	 * 
@@ -306,9 +289,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default int getInt(long position) {
-		return get(position, Integer.BYTES).getInt();
-	}
+	int getInt(long position);
 	
 	/**
 	 * 
@@ -327,10 +308,8 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default long getLong(long position) {
-		return get(position, Long.BYTES).getLong();
-	}
-
+	long getLong(long position);
+		
 	/**
 	 * 
      * Absolute <i>get</i> method.
@@ -348,9 +327,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default float getFloat(long position) {
-		return get(position, Float.BYTES).getFloat();
-	}
+	 float getFloat(long position);
 	
 	/**
 	 * 
@@ -369,9 +346,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
      *          
 	 */
-	default double getDouble(long position) {
-		return get(position, Double.BYTES).getDouble();
-	}
+	 double getDouble(long position);
 	
 	/**
 	 * 
@@ -464,38 +439,11 @@ public interface ByteSpace extends AutoCloseable {
 	 * 
      * Absolute bulk <i>put</i> method.
      *
-     * <p> This method copies <code>length</code> bytes from the given ByteBuffer
-     * into this space at the given address.</p>
-     * 
-     * @param  position
-     * 		   The address to which bytes are copied
-     * 
-     * @param  buffer
-     *         The buffer from which bytes are to be read
-     *
-     * @param  length
-     *         The  number of bytes to be written to the given address.
-     *         must be non-negative and no larger than <code>buffer.remaining()</code>
-     *
-     * @return  This space
-     *
-     * @throws  IllegalArgumentException
-     *          If the preconditions on the parameters do not hold
-	 *
-	 */
-	default ByteSpace put(long position, ByteBuffer buffer, int length) {
-		byte[] bytes = new byte[length];
-		buffer.get(bytes);
-		return put(position, bytes);
-	}
-	
-	/**
-	 * 
-     * Absolute bulk <i>put</i> method.
-     *
      * <p> This method copies <code>buffer.remaining()</code> bytes from the given ByteBuffer
      * into this space at the given address.</p>
      * 
+     * <p> Upon return the buffer's position will be its current position + remaining()
+     * 
      * @param  position
      * 		   The address to which bytes are copied
      * 
@@ -508,9 +456,8 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace put(long position, ByteBuffer buffer) {
-		return put(position, buffer, buffer.remaining());
-	}
+	ByteSpace put(long position, ByteBuffer buffer);
+		
 	
 	/**
 	 * 
@@ -530,9 +477,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace put(long position, byte in) {
-		return put(position, new byte[] { in } );
-	}
+	ByteSpace put(long position, byte in);
 	
 	/**
 	 * 
@@ -553,10 +498,8 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putShort(long position, short in) {
-		return put(position, ByteBuffer.allocate(Short.BYTES).putShort(in).array());
-	}
-	
+	ByteSpace putShort(long position, short in);
+		
 	/**
 	 * 
      * Absolute <i>put</i> method.
@@ -576,9 +519,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putChar(long position, char in) {
-		return put(position, ByteBuffer.allocate(Character.BYTES).putChar(in).array());
-	}
+	ByteSpace putChar(long position, char in);
 	
 	/**
 	 * 
@@ -599,9 +540,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putInt(long position, int in) {
-		return put(position, ByteBuffer.allocate(Integer.BYTES).putInt(in).array());
-	}
+	ByteSpace putInt(long position, int in);
 	
 	/**
 	 * 
@@ -622,9 +561,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putLong(long position, long in) {
-		return put(position, ByteBuffer.allocate(Long.BYTES).putLong(in).array());
-	}
+	ByteSpace putLong(long position, long in);
 	
 	/**
 	 * 
@@ -645,9 +582,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putFloat(long position, float in) {
-		return put(position, ByteBuffer.allocate(Float.BYTES).putFloat(in).array());
-	}
+	ByteSpace putFloat(long position, float in);
 	
 	/**
 	 * 
@@ -668,9 +603,7 @@ public interface ByteSpace extends AutoCloseable {
      *          If the preconditions on the parameters do not hold
 	 *
 	 */
-	default ByteSpace putDouble(long position, double in) {
-		return put(position, ByteBuffer.allocate(Double.BYTES).putDouble(in).array());
-	}
+	ByteSpace putDouble(long position, double in);
 	
 	/**
 	 * 
@@ -684,7 +617,7 @@ public interface ByteSpace extends AutoCloseable {
 	 * @return the shifted space
 	 */
 	default ByteSpace shift(long value) {
-		return new ShiftedSpace(this, value);
+		return value == 0 ? this : new ShiftedSpace(this, value);
 	}
 	
 	/**
@@ -706,7 +639,24 @@ public interface ByteSpace extends AutoCloseable {
 		if (Long.compareUnsigned(capacity(), newCapacity) < 0) {
 			throw new IllegalArgumentException();
 		}
-		return new LimitedSpace(this, newCapacity);
+		return capacity() == newCapacity ? this : new LimitedSpace(this, newCapacity);
+	}
+	
+	/**
+	 *
+	 * Slice space
+	 * 
+	 * <p>This method returns a new ByteSpace, backed by this space, whose addresses are shifted and limited by the arguments.
+	 * </p>
+	 * 
+	 * @param shift amount to shift
+	 * 
+	 * @param capacity the new capacity
+	 * 
+	 * @return the sliced space
+	 */
+	default ByteSpace slice(long shift, long capacity) {
+		return new ShiftedLimitedSpace(this, shift, capacity);
 	}
 	
 	/**

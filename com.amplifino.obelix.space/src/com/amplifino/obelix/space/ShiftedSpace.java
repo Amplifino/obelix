@@ -10,17 +10,17 @@ class ShiftedSpace extends WrappedSpace {
 	}
 	
 	@Override
-	public ByteSpace get(long position, byte[] bytes, int start, int length) { 
-		return super.get(position + bias, bytes, start, length);
-	}
-
-	@Override
-	public ByteSpace put(long position, byte[] bytes, int start, int length) {
-		return super.put(position + bias, bytes, start, length);
+	long translate(long position, int offset) {
+		return position + bias;
 	}
 	
 	@Override
 	public ByteSpace shift(long offset) {
 		return space().shift(offset + bias);
+	}
+	
+	@Override
+	public ByteSpace capacity(long capacity) {
+		return space().slice(bias, capacity);
 	}
 }

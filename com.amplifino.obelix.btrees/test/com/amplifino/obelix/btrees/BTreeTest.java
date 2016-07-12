@@ -2,6 +2,7 @@ package com.amplifino.obelix.btrees;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
@@ -16,7 +17,9 @@ import com.amplifino.obelix.injections.LongValuePairInjection;
 import com.amplifino.obelix.injections.RawInjections;
 import com.amplifino.obelix.pairs.OrderedPair;
 import com.amplifino.obelix.segments.BlockSpace;
+import com.amplifino.obelix.space.ByteSpace;
 import com.amplifino.obelix.space.HeapSpace;
+import com.amplifino.obelix.space.OffHeapSpace;
 
 public class BTreeTest {
 
@@ -44,8 +47,9 @@ public class BTreeTest {
 	}
 	
 	@Test
-	public void testSplit() {
-		BlockSpace space = BlockSpace.on(new HeapSpace(),4096, 0);
+	public void testSplit() throws IOException {
+		ByteSpace byteSpace = new OffHeapSpace();
+		BlockSpace space = BlockSpace.on(byteSpace,8192, 0);
 		BTree<String, Long> tree = BTree.on(
 				space, 
 				Comparator.naturalOrder(), 
@@ -91,6 +95,7 @@ public class BTreeTest {
 			.forEach( i -> tree.remove(String.valueOf(i)));
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		assertEquals(0L, tree.graph().parallel().count());
+		byteSpace.close();
 	}
 
 }
