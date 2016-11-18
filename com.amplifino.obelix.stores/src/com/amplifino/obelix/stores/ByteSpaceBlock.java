@@ -56,22 +56,27 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		return size(size() - 1);
 	}
 		
-	private long offset(int index) {
+	private int offset(int index) {
 		return index == 0 ? Integer.BYTES : space.getInt(space.capacity() - Integer.toUnsignedLong(index * Integer.BYTES));
 	}
 	
-	private byte[] data(int index) {
-		long offset = offset(index);
-		int length = (int) (offset(index+1) - offset);
-		return space.getBytes(offset, length);
-	}
-		
 	@Override
 	public byte[] get(int index) {
 		if (index < 0 || index >= size()) {
 			throw new IllegalArgumentException();
 		}
-		return data(index);
+		//
+		// optimization of simple
+		// return space.getBytes(offset(index), offset(index+1) - offset(index);
+		// to reduce number of space calls with are potentially expensive (depending on space type).
+		//
+		if (index == 0) {
+			final int offset = Integer.BYTES;
+			return space.getBytes(offset, offset(1) - offset);
+		} else {
+			final long dualOffset = space.getLong(space.capacity() - Integer.toUnsignedLong((index + 1) * Integer.BYTES));
+			return space.getBytes((int) dualOffset, (int) (dualOffset >>> 32) - (int) dualOffset); 
+		}
 	}
 
 	@Override
@@ -79,13 +84,13 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		if (index < 0 || index >= size()) {
 			throw new IllegalArgumentException();
 		}
-		final long start = offset(index);
-		final long end = offset(index+1);
-		final long last = offset(size);
-		final int  length = (int) (offset(index + 1) - offset(index));
+		final int start = offset(index);
+		final int end = offset(index+1);
+		final int last = offset(size);
+		final int  length = end - start;
 		final int delta = checkLength(element) -  length;
 		if (delta > 0) {
-			final long current = last + size() * Integer.BYTES;
+			final int current = last + size() * Integer.BYTES;
 			if (current + delta > space.capacity()) {
 				return false;
 			}
@@ -110,8 +115,8 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		if (checkLength(element) + Integer.BYTES > remaining()) {			
 			return false;
 		}
-		long last = offset(size());
-		long offset = offset(index);
+		int last = offset(size());
+		int offset = offset(index);
 		if (offset < last) {
 			move(offset, last, element.length);
 			final int rowDirectoryLength = (size() + 1) * Integer.BYTES; 
@@ -131,8 +136,8 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 	}
 	
 	
-	private void move(long start, long end, int offset) {
-		space.put(start + offset, space.getBytes(start,  Math.toIntExact(end - start)));
+	private void move(int start, int end, int offset) {
+		space.put(start + offset, space.getBytes(start,  end - start));
 	}
 	
 	@Override
@@ -140,9 +145,9 @@ public final class ByteSpaceBlock implements Block<byte[]>  {
 		if (index < 0 || index >= size()) {
 			throw new IllegalArgumentException();
 		}
-		long last = offset(size());
-		long offset = offset(index);
-		int length = (int) (offset(index+1) - offset);
+		final int last = offset(size());
+		final int offset = offset(index);
+		final int length = offset(index+1) - offset;
 		if (offset < last) {
 			move(offset + length, last, -length);
 			long position = space.capacity() - (index + 1) * Integer.BYTES;

@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -48,8 +49,8 @@ public class BTreeTest {
 	
 	@Test
 	public void testSplit() throws IOException {
-		ByteSpace byteSpace = new OffHeapSpace();
-		BlockSpace space = BlockSpace.on(byteSpace,8192, 0);
+		ByteSpace byteSpace = new OffHeapSpace(30);
+		BlockSpace space = BlockSpace.on(byteSpace, 1<<17, 0);
 		BTree<String, Long> tree = BTree.on(
 				space, 
 				Comparator.naturalOrder(), 
@@ -60,13 +61,13 @@ public class BTreeTest {
 		int limit = 999999;
 		IntStream.range(0, limit)
 			.parallel()
-			.mapToObj(Integer::toString)
+			.mapToObj(i -> Double.toString(ThreadLocalRandom.current().nextGaussian()))
 			.forEach(key -> {
 					tree.put(key, Thread.currentThread().getId());
 					checkList.add(key);		
 			});
-		String key = String.valueOf(limit);
-		tree.put(String.valueOf(key), Thread.currentThread().getId());
+		String key = Double.toString(ThreadLocalRandom.current().nextGaussian());
+		tree.put(key, Thread.currentThread().getId());
 		checkList.add(key);
 		limit++;
 		snapshot = tree.counts().delta(snapshot, Counts::print);
@@ -75,7 +76,7 @@ public class BTreeTest {
 			.filter(k -> !tree.get(k).isPresent())
 			.forEach(System.out::println);
 		snapshot = tree.counts().delta(snapshot, Counts::print);
-		assertEquals((long) limit, tree.graph().parallel().count());
+		assertEquals((long) checkList.size(), tree.graph().parallel().count());
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		tree.graph()
 			.parallel()
@@ -90,9 +91,7 @@ public class BTreeTest {
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		System.out.println(tree.graph().parallel().collect(Collectors.groupingBy(pair -> pair.value(), Collectors.counting())));
 		snapshot = tree.counts().delta(snapshot, Counts::print);
-		IntStream.range(0, limit)
-			.parallel()
-			.forEach( i -> tree.remove(String.valueOf(i)));
+		checkList.parallelStream().forEach(tree::remove);
 		snapshot = tree.counts().delta(snapshot, Counts::print);
 		assertEquals(0L, tree.graph().parallel().count());
 		byteSpace.close();
