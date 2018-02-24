@@ -2,7 +2,7 @@ package com.amplifino.obelix.btrees;
 
 import java.util.stream.Stream;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 import com.amplifino.obelix.pairs.LongValuePair;
 import com.amplifino.obelix.pairs.OrderedPair;
 
@@ -18,5 +18,5 @@ interface Branch<K,V> extends Node<K, V> {
 	RealNode<K,V> node(Branch<K,V> parent, long tag);
 	void free(long tag);
 	void refresh(long tag);
-	Counters<BTreeCounters> counters();
+	Accumulators<BTreeCounters> counters();
 }

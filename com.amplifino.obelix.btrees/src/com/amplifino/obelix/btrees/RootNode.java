@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 import com.amplifino.obelix.pairs.LongValuePair;
 import com.amplifino.obelix.pairs.OrderedPair;
 
@@ -54,7 +54,7 @@ class RootNode<K,V> implements Branch<K,V> {
 	}
 	
 	@Override
-	public Counters<BTreeCounters> counters() {
+	public Accumulators<BTreeCounters> counters() {
 		return bTree.counters();
 	}
 	

@@ -5,7 +5,7 @@ import java.util.OptionalLong;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 import com.amplifino.obelix.pairs.LongValuePair;
 import com.amplifino.obelix.pairs.OrderedPair;
 import com.amplifino.obelix.stores.Block;
@@ -64,7 +64,7 @@ class BranchNode<K,V> extends AbstractNode<K,V> implements Branch<K,V> {
 	}	
 
 	@Override
-	public Counters<BTreeCounters> counters() {
+	public Accumulators<BTreeCounters> counters() {
 		return parent().counters();
 	}
 	

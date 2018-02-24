@@ -106,6 +106,7 @@ public class FastMapTest {
 	
 	@Test
 	public void test() throws IOException  {
+		try {
 		new Random(1234).longs(SAMPLESIZE)
 			.parallel()
 			.forEach( random -> {
@@ -129,6 +130,10 @@ public class FastMapTest {
 		}
 		check("Update/Remove");
 		space.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
 	}
 	
 	void check(String header) {

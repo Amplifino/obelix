@@ -1,10 +1,10 @@
 Export-Package: com.amplifino.obelix.btrees
 -buildpath: \
-	com.amplifino.counters,\
 	com.amplifino.obelix.stores;version=latest,\
 	com.amplifino.obelix.sets;version=latest,\
 	com.amplifino.obelix.space;version=latest,\
 	com.amplifino.obelix.segments;version=latest,\
 	com.amplifino.obelix.injections;version=latest,\
 	biz.aQute.junit;version=3.0,\
-	osgi.annotation;version=6.0
+	osgi.annotation;version=6.0,\
+	com.amplifino.counters;version=1.1

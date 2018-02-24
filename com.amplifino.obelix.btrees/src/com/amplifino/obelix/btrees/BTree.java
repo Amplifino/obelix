@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 import com.amplifino.counters.Counts;
 import com.amplifino.obelix.injections.LongValuePairInjection;
 import com.amplifino.obelix.pairs.LongValuePair;
@@ -25,7 +25,7 @@ public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 	private final ConcurrentBlockSpace space;
 	private final Injection<OrderedPair<K, V>, byte[]> leafInjection;
 	private final Injection<LongValuePair<K>, byte[]> branchInjection;
-	private final Counters<BTreeCounters> counters = Counters.of(BTreeCounters.class);
+	private final Accumulators<BTreeCounters> counters = Accumulators.of(BTreeCounters.class);
  	
 	private BTree(BlockSpace space, Comparator<? super K> comparator, Injection<K, byte[]> keyInjection, Injection<OrderedPair<K,V>, byte []> pairInjection) {
 		this.space = ConcurrentBlockSpace.on(space);
@@ -93,7 +93,7 @@ public final class BTree<K,V> implements SortedInfiniteMap<K,V> {
 		return branchInjection;
 	}
 
-	Counters<BTreeCounters> counters() {
+	Accumulators<BTreeCounters> counters() {
 		return counters;
 	}
 

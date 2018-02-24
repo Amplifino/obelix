@@ -1,6 +1,6 @@
 Bundle-Version: 1.0.0
 Export-Package: com.amplifino.obelix.space
 -buildpath: \
-	com.amplifino.counters,\
 	osgi.annotation,\
-	biz.aQute.junit;version=3.0
+	biz.aQute.junit;version=3.0,\
+	com.amplifino.counters;version=1.1

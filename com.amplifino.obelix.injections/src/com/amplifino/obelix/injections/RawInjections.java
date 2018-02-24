@@ -4,6 +4,8 @@ import com.amplifino.obelix.sets.Injection;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public final class RawInjections {
 	
@@ -25,19 +27,11 @@ public final class RawInjections {
 	}
 	
 	private static String fromUtf8(byte[] bytes) {
-		try {
-			return new String(bytes, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new UnsupportedOperationException(e);
-		}
+		return new String(bytes, StandardCharsets.UTF_8);
 	}
 	
 	private static byte[] toUtf8(String string) {
-		try {
-			return string.getBytes("UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			throw new UnsupportedOperationException(e);
-		}
+		return string.getBytes(StandardCharsets.UTF_8);		
 	}
 	
 	public static Injection<String, byte[]> strings() {

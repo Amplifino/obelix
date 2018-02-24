@@ -1,14 +1,14 @@
 package com.amplifino.obelix.btrees;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 import com.amplifino.obelix.pairs.LongValuePair;
 
 class BranchSplitState<K> {
 	
 	private final ConcurrentBlock<LongValuePair<K>> lock;
-	private final Counters<BTreeCounters> counters;
+	private final Accumulators<BTreeCounters> counters;
 	 
-	BranchSplitState(ConcurrentBlock<LongValuePair<K>> lock, Counters<BTreeCounters> counters) {
+	BranchSplitState(ConcurrentBlock<LongValuePair<K>> lock, Accumulators<BTreeCounters> counters) {
 		this.lock = lock;
 		this.counters = counters;
 	}

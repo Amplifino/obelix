@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.amplifino.counters.Accumulators;
 import com.amplifino.counters.Counters;
 import com.amplifino.counters.Counts;
 
@@ -23,7 +24,7 @@ public abstract class PagedSpace implements ByteSpace {
 	private final long offsetMask;
 	
 	private Map<Long, ByteSpace> map = new ConcurrentHashMap<>();
-	private final Counters<SpaceCounters> counters =  Counters.of(SpaceCounters.class);
+	private final Accumulators<SpaceCounters> counters =  Accumulators.of(SpaceCounters.class);
 	
 	/**
 	 * creates a new PagedSpace using <code>pageShift</code>bits for the offset
@@ -68,7 +69,7 @@ public abstract class PagedSpace implements ByteSpace {
 	
 	@Override
 	public PagedSpace put(long position, byte[] bytes, int start , int length) {
-		counters.increment(SpaceCounters.LOGICALWRITES).add(SpaceCounters.BYTESWRITTEN, length);
+		counters.increment(SpaceCounters.LOGICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, length);
 		return doPut(position, bytes, start, length);
 	}
 	
@@ -94,7 +95,7 @@ public abstract class PagedSpace implements ByteSpace {
 	
 	@Override
 	public PagedSpace get(long position, byte[] bytes, int start , int length) {
-		counters.increment(SpaceCounters.LOGICALREADS).add(SpaceCounters.BYTESREAD, length);
+		counters.increment(SpaceCounters.LOGICALREADS).accumulate(SpaceCounters.BYTESREAD, length);
 		return doGet(position, bytes, start, length);
 	}
 
@@ -123,7 +124,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + length > pageSize) {
 			return ByteBuffer.wrap(getBytes(position, length));
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, length);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, length);
 			return getPage(position).get(offset, length);
 		}
 	}
@@ -137,7 +138,7 @@ public abstract class PagedSpace implements ByteSpace {
 	
 	@Override 
 	public byte get(long position) {
-		counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Byte.BYTES);
+		counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Byte.BYTES);
 		return getPage(position).get(getOffset(position));
 	}
 	
@@ -147,7 +148,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Short.BYTES > pageSize) {
 			return get(position, Short.BYTES).getShort();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Short.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Short.BYTES);
 			return getPage(position).getShort(offset);
 		}
 	}
@@ -158,7 +159,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Character.BYTES > pageSize) {
 			return get(position, Character.BYTES).getChar();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Character.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Character.BYTES);
 			return getPage(position).getChar(offset);
 		}
 	}
@@ -169,7 +170,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Integer.BYTES > pageSize) {
 			return get(position, Integer.BYTES).getInt();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Integer.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Integer.BYTES);
 			return getPage(position).getInt(offset);
 		}
 	}
@@ -180,7 +181,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Float.BYTES > pageSize) {
 			return get(position, Float.BYTES).getFloat();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Float.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Float.BYTES);
 			return getPage(position).getFloat(offset);
 		}
 	}
@@ -191,7 +192,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Long.BYTES > pageSize) {
 			return get(position, Long.BYTES).getLong();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Long.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Long.BYTES);
 			return getPage(position).getLong(offset);
 		}
 	}
@@ -202,13 +203,13 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Double.BYTES > pageSize) {
 			return get(position, Double.BYTES).getDouble();
 		} else {
-			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).add(SpaceCounters.BYTESREAD, Double.BYTES);
+			counters.increment(SpaceCounters.LOGICALREADS).increment(SpaceCounters.PHYSICALREADS).accumulate(SpaceCounters.BYTESREAD, Double.BYTES);
 			return getPage(position).getDouble(offset);
 		}
 	}
 	@Override
 	public ByteSpace put(long position, byte in) {
-		counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Byte.BYTES);
+		counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Byte.BYTES);
 		getPage(position).put(getOffset(position), in);
 		return this;
 	}
@@ -219,7 +220,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Short.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Short.BYTES).putShort(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Short.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Short.BYTES);
 			getPage(position).putShort(offset, in);
 		}
 		return this;
@@ -231,7 +232,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Character.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Character.BYTES).putChar(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Character.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Character.BYTES);
 			getPage(position).putChar(offset, in);
 		}
 		return this;
@@ -243,7 +244,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Integer.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Integer.BYTES).putInt(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Integer.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Integer.BYTES);
 			getPage(position).putInt(offset, in);
 		}
 		return this;
@@ -255,7 +256,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Float.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Float.BYTES).putFloat(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Float.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Float.BYTES);
 			getPage(position).putFloat(offset, in);
 		}
 		return this;
@@ -267,7 +268,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Long.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Long.BYTES).putLong(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Long.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Long.BYTES);
 			getPage(position).putLong(offset, in);
 		}
 		return this;
@@ -279,7 +280,7 @@ public abstract class PagedSpace implements ByteSpace {
 		if (offset + Integer.BYTES > pageSize) {
 			put(position, ByteBuffer.allocate(Double.BYTES).putDouble(0, in));
 		} else {
-			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).add(SpaceCounters.BYTESWRITTEN, Double.BYTES);
+			counters.increment(SpaceCounters.LOGICALWRITES).increment(SpaceCounters.PHYSICALWRITES).accumulate(SpaceCounters.BYTESWRITTEN, Double.BYTES);
 			getPage(position).putDouble(offset, in);
 		}
 		return this;

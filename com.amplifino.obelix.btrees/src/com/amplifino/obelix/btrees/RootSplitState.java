@@ -5,17 +5,17 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import com.amplifino.counters.Counters;
+import com.amplifino.counters.Accumulators;
 
 class RootSplitState<K,V> {
 	
 	private Optional<RealNode<K,V>> root;
 	private final ConcurrentBlockSpace space;
-	private final Counters<BTreeCounters> counters;
+	private final Accumulators<BTreeCounters> counters;
 	private final ReadWriteLock lock = new ReentrantReadWriteLock(true);
 	
 
-	RootSplitState(Optional<RealNode<K,V>> root, ConcurrentBlockSpace space, Counters<BTreeCounters> counters) {
+	RootSplitState(Optional<RealNode<K,V>> root, ConcurrentBlockSpace space, Accumulators<BTreeCounters> counters) {
 		this.root = root;
 		this.space = space;
 		this.counters = counters;
@@ -71,7 +71,7 @@ class RootSplitState<K,V> {
 	}
 	
 	private int check(int count) {
-		counters.increment(BTreeCounters.RESTARTS).max(BTreeCounters.MAXRESTARTS, count + 1);		
+		counters.increment(BTreeCounters.RESTARTS).accumulate(BTreeCounters.MAXRESTARTS, count + 1);		
 		return count + 1;
 	}
 

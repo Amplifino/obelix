@@ -50,7 +50,8 @@ public class BTreeTest {
 	@Test
 	public void testSplit() throws IOException {
 		ByteSpace byteSpace = new OffHeapSpace(30);
-		BlockSpace space = BlockSpace.on(byteSpace, 1<<17, 0);
+		//BlockSpace space = BlockSpace.on(byteSpace, 1<<17, 0);
+		BlockSpace space = BlockSpace.on(byteSpace, 16384, 0);
 		BTree<String, Long> tree = BTree.on(
 				space, 
 				Comparator.naturalOrder(), 
